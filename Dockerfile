@@ -6,6 +6,9 @@ WORKDIR /app
 
 ADD . .
 
+RUN chmod +x /app/scripts/wait-for-it.sh
+RUN chmod +x /app/scripts/entrypoint.sh
+
 RUN deno cache src/main.ts
 
-CMD  ["deno", "serve", "--port", "3001" ,"src/main.ts" ]
+CMD ["/app/scripts/entrypoint.sh"]
