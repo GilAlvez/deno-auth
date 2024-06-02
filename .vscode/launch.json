@@ -1,0 +1,25 @@
+{
+  // Use o IntelliSense para saber mais sobre os atributos possíveis.
+  // Focalizar para exibir as descrições dos atributos existentes.
+  // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "request": "launch",
+      "name": "Deno Auth Dev",
+      "type": "node",
+      "program": "${workspaceFolder}/src/main.ts",
+      "cwd": "${workspaceFolder}",
+      "env": {},
+      "runtimeExecutable": "/home/wsl/.deno/bin/deno",
+      "runtimeArgs": [
+        "serve",
+        "--allow-all",
+        "--inspect-wait",
+        "--port",
+        "3001",
+      ],
+      "attachSimplePort": 9229
+    }
+  ]
+}
