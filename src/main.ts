@@ -1,10 +1,11 @@
-import { Hono } from 'hono'
+import { Hono } from 'hono';
+import auth from "./app/routes/auth.router.ts";
+import users from "./app/routes/users.router.ts";
 
 const app = new Hono()
 
-app.get('/', (c) => {
-  return c.text('Hello World!')
-})
+app.route('/auth', auth)
+app.route('/users', users)
 
 export default app
 
