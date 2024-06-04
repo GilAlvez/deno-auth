@@ -19,7 +19,7 @@ export class SignUpWithEmailUseCase implements ISignUpWithEmailUseCase {
     const emailExists = await this.usersRepository.findUnique("email", validParams.email);
     if (emailExists) throw new ResourceConflict("Email already exists");
 
-    const hashedPassword = await hash(validParams.email);
+    const hashedPassword = await hash(validParams.password);
 
     const user = await this.usersRepository.create({
       givenName: validParams.givenName,
