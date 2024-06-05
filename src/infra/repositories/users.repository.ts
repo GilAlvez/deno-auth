@@ -1,18 +1,18 @@
 import { Db, ObjectId } from "mongodb";
-import { SignUpWithEmailParamsDto } from "../../core/dtos/sign_up_with_email_params.dto.ts";
+import { CreateUserParamsDto } from "../../core/dtos/create_user_params.dto.ts";
 import { User, UserSchema } from "../../core/entities/user.entity.ts";
 import { db } from "../database/db.ts";
 
 export class UsersRepository {
   constructor(private readonly database: Db = db) {}
 
-  async create(params: SignUpWithEmailParamsDto): Promise<User | null> {
+  async create(params: CreateUserParamsDto): Promise<User | null> {
     const user = await this.database.collection("users").insertOne({
-      uuid: crypto.randomUUID(),
+      uuid: params.uuid ?? crypto.randomUUID(),
       ...params,
       createdAt: new Date(),
       updatedAt: new Date(),
-    }, {});
+    });
     
     const createdUser = await this.findUnique("_id", user.insertedId);
     return createdUser;
