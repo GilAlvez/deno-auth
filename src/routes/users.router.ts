@@ -2,7 +2,7 @@ import { Hono } from "hono";
 
 const router = new Hono()
 
-router.post("/", (c) => {
+router.get("/", (c) => {
   const body = c.req.json()
   return c.json(body)
 })
