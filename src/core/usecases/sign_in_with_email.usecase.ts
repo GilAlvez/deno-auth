@@ -1,7 +1,6 @@
 import { compare } from "bcrypt";
-import { sign } from "jsr:@hono/hono@^4.4.0/jwt";
-import { env } from "../../env.ts";
 import { UsersRepository } from "../../infra/repositories/users.repository.ts";
+import { JwtService } from "../../services/jwt.service.ts";
 import { SignInWithEmailParamsDto, SignInWithEmailParamsSchema } from "../dtos/sign_in_with_email_params.dto.ts";
 import { InvalidFlow } from "../errors/invalid_flow.ts";
 import { Unauthorized } from "../errors/unauthorized.ts";
@@ -11,7 +10,10 @@ export interface ISignInWithEmailUseCase {
 }
 
 export class SignInWithEmailUseCase implements ISignInWithEmailUseCase {
-  constructor(private readonly usersRepository: UsersRepository = new UsersRepository()) {}
+  constructor(
+    private readonly usersRepository: UsersRepository = new UsersRepository(),
+    private readonly jwtService = new JwtService(),
+  ) {}
 
   async execute(params: SignInWithEmailParamsDto): Promise<string> {
     const validParams = SignInWithEmailParamsSchema.parse(params);
@@ -25,14 +27,6 @@ export class SignInWithEmailUseCase implements ISignInWithEmailUseCase {
 
     if (!isValidPassword) throw new Unauthorized("Invalid credentials");
 
-    const accessToken = await sign({
-        sub: user.uuid,
-        name: `${user.givenName} ${user.familyName}`,
-        email: user.email,
-      }, 
-      env.JWT_SECRET,
-    )
-
-    return accessToken
+    return await this.jwtService.generateAccessToken(user)
   }
 }
