@@ -42,7 +42,7 @@ export class GoogleApis {
     } catch (e ) {
       if (e instanceof HTTPError) {
         const body = await e.response.json()
-        console.error("GoogleApis.getTokens", body.error)
+        console.error("GoogleApis.getTokens", body)
       } 
       throw new GoogleApisError("Unable to get Google tokens");
     }
@@ -57,7 +57,7 @@ export class GoogleApis {
     } catch (e) {
       if (e instanceof HTTPError) {
         const body = await e.response.json()
-        console.error("GoogleApis.revokeToken", body.error)
+        console.error("GoogleApis.revokeToken", body)
       }
       throw new GoogleApisError("Unable to revoke token");
     }
@@ -73,7 +73,7 @@ export class GoogleApis {
     } catch (e) {
       if (e instanceof HTTPError) {
         const body = await e.response.json()
-        console.error("GoogleApis.getUserInfo", body.error)
+        console.error("GoogleApis.getUserInfo", body)
       }
       throw new GoogleApisError("Unable to Google get user info");
     }

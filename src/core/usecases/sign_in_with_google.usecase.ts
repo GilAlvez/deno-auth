@@ -1,4 +1,4 @@
-import { GoogleApis } from "../../infra/google/google_apis.ts";
+import { OAuth2Repository } from "../../infra/repositories/oauth2.repository.ts";
 import { UsersRepository } from "../../infra/repositories/users.repository.ts";
 import { JwtService } from "../../services/jwt.service.ts";
 import { SignInWithGoogleParamsDto, SignInWithGoogleParamsSchema } from "../dtos/sign_in_with_google_params.dto.ts";
@@ -11,17 +11,15 @@ export interface ISignInWithGoogleUseCase {
 export class SignInWithGoogleUseCase implements ISignInWithGoogleUseCase {
   constructor(
     private readonly usersRepository: UsersRepository = new UsersRepository(),
-    private readonly googleApis = new GoogleApis(),
+    private readonly oAuth2Repository = new OAuth2Repository(),
     private readonly jwtService = new JwtService(),
   ) {}
 
   async execute(params: SignInWithGoogleParamsDto): Promise<string> {
-    const { code, redirectUri } = SignInWithGoogleParamsSchema.parse(params);
+    const validParams = SignInWithGoogleParamsSchema.parse(params);
 
-    const tokens = await this.googleApis.getTokens(code, redirectUri);
-    const userInfo = await this.googleApis.getUserInfo(tokens.access_token);
-    await this.googleApis.revokeToken(tokens.access_token);
-    
+    const userInfo = await this.oAuth2Repository.getGoogleUserInfo(validParams);
+
     if (!userInfo.verified_email) throw new Unauthorized("Google account is not verified")
 
     let user = await this.usersRepository.findUnique("email", userInfo.email)
